@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberDefender: Nuoren Digikansalaisen Polku</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Lucide Icons & Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        .cyber-glass {
+            background: rgba(22, 27, 34, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(56, 139, 253, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .cyber-glow {
+            box-shadow: 0 0 15px rgba(56, 139, 253, 0.4);
+        }
+        .cyber-glow-green {
+            box-shadow: 0 0 15px rgba(46, 160, 67, 0.4);
+        }
+        .cyber-glow-red {
+            box-shadow: 0 0 15px rgba(248, 81, 73, 0.4);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #58a6ff;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-gray-800 bg-gray-900/90 sticky top-0 z-50 backdrop-blur">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xl font-black shadow-lg shadow-blue-500/30">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-wide text-white flex items-center gap-2">
+                        CyberDefender <span class="text-xs px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 font-semibold">PRO</span>
+                    </h1>
+                    <p class="text-xs text-gray-400">Nuoren digikansalaisen turvapeli</p>
+                </div>
+            </div>
+
+            <!-- Stats Badge -->
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 bg-gray-800/80 px-3 py-1.5 rounded-lg border border-gray-700">
+                    <i class="fa-solid fa-star text-yellow-400"></i>
+                    <span id="score-display" class="font-bold text-sm text-yellow-400">0 XP</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-gray-800/80 px-3 py-1.5 rounded-lg border border-gray-700">
+                    <i class="fa-solid fa-layer-group text-blue-400"></i>
+                    <span id="level-indicator" class="font-bold text-sm text-blue-400">Taso 1/7</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main class="max-w-4xl w-full mx-auto p-4 my-6 flex-grow">
+        
+        <!-- Progress Bar -->
+        <div class="mb-6">
+            <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
+                <span id="progress-text">Pelitilanne: 0%</span>
+                <span id="rank-badge" class="text-blue-400 font-semibold">Kokematon Surffaaja</span>
+            </div>
+            <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden border border-gray-700">
+                <div id="progress-bar" class="bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-400 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Dynamic Game Card / Screen -->
+        <div id="game-card" class="cyber-glass rounded-2xl p-6 md:p-8 transition-all duration-300 relative overflow-hidden">
+            <!-- Dynamic Content Injected via JS -->
+        </div>
+
+    </main>
+
+    <!-- Feedback Modal / Popup -->
+    <div id="feedback-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="cyber-glass max-w-md w-full rounded-2xl p-6 border border-gray-700 shadow-2xl transform transition-all scale-95 opacity-0" id="modal-content">
+            <div id="modal-icon" class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                <!-- Icon via JS -->
+            </div>
+            <h3 id="modal-title" class="text-xl font-bold text-center mb-2">Otsikko</h3>
+            <p id="modal-body" class="text-gray-300 text-sm text-center mb-6 leading-relaxed">Palaute...</p>
+            <button id="modal-btn" class="w-full py-3 rounded-xl font-bold bg-blue-600 hover:bg-blue-500 text-white transition shadow-lg shadow-blue-600/30">
+                Jatka eteenpäin <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-gray-900/50 py-4 text-center text-xs text-gray-500">
+        <p>© 2026 CyberDefender - Kansalaisen Kyberturvallisuusnuoriso. Turvallisesti verkossa.</p>
+    </footer>
+
+    <!-- Game Logic JavaScript -->
+    <script>
+        // Game State
+        const gameState = {
+            score: 0,
+            currentLevel: 0,
+            completedLevels: [],
+            // Custom state variable for password input
+            customPassword: ""
+        };
+
+        // Level Definitions
+        const levels = [
+            {
+                id: 1,
+                title: "Taso 1: Murtautumaton Salasana",
+                category: "Autentikaatio & Salasana-hygienia",
+                description: "Hakkereiden automaattiset työkalut kokeilevat miljoonia salasanayhdistelmiä sekunnissa. Keksi ja kirjoita <b>esimerkkisalasana</b> (älä käytä mitään oikeaa omaa salasanaasi!) ja katso, täyttääkö se turvavaatimukset.",
+                type: "password_builder",
+                hint: "Pituus on tärkein tekijä! Kirjoita vähintään 12 merkkiä pitkä esimerkkisalasana, joka sisältää isoja ja pieniä kirjaimia, numeroita sekä erikoismerkkejä."
+            },
+            {
+                id: 2,
+                title: "Taso 2: Puhelimen & Laitteen Suojaus",
+                category: "Laiteturvallisuus",
+                description: "Puhelimesi sisältää koko elämäsi: viestit, kuvat, pankkitiedot ja some-tilit. Miten suojaat laitteesi luvattomalta käytöltä ja kyberuhilta?",
+                type: "device_security",
+                hint: "Laitteen päivitykset paikkaavat turvaaukkoja ja pääsykoodi estää fyysisen urkkimisen."
+            },
+            {
+                id: 3,
+                title: "Taso 3: Tunnista Kalasteluviesti (Phishing)",
+                category: "Sosiaalinen Hakkerointi",
+                description: "Sait viestin puhelimeesi. Kalasteluviesteillä yritetään varastaa tilisi tai rahasi. Onko tämä aito vai huijaus?",
+                type: "phishing_chat",
+                messages: [
+                    { sender: "Steam Security", text: "VAROITUS: Tilillesi on murtauduttu! Klikkaa linkkiä 15 minuutissa vahvistaaksesi identiteettisi tai tilisi poistetaan: http://steam-security-verify.com/login", isPhishing: true },
+                    { sender: "Opettaja Ville", text: "Hei! Muistattehan palauttaa yhteiskuntaopin esitelmän huomiseen klo 16 mennessä Wilmaan.", isPhishing: false },
+                    { sender: "Instagram Support", text: "Sait sinisen vahvistusmerkin! Kirjaudu sisään tästä ilmaiseksi lunastaaksesi merkin: http://insta-blue-check-free.net", isPhishing: true },
+                    { sender: "Posti Pakettipalvelu", text: "Pakettisi (-#892311) saapumista ei voida käsitellä puuttuvan osoitemaksun (1,99 €) vuoksi. Maksa maksu tästä: http://posti-suomi-seuranta-paivita.top", isPhishing: true },
+                    { sender: "Nordea Pankki", text: "Tärkeää: Verkkopankkitunnuksesi vanhenevat tänään! Vahvista tunnuksesi pikaisesti osoitteessa http://nordea-suomi-turva.org", isPhishing: true },
+                    { sender: "Kaveri (Mikael)", text: "Moi! Laitoin discordiin kutsulinkin meidän uuteen peliryhmään, käy tsekkaa ku kerkeet!", isPhishing: false }
+                ]
+            },
+            {
+                id: 4,
+                title: "Taso 4: Julkiset Wi-Fi -verkot",
+                category: "Verkkoturvallisuus",
+                description: "Olet kahvilassa ja puhelimesi akku ja data ovat vähissä. Tarvitset nettiä. Mitkä seuraavista verkoista ja toiminnoista ovat TURVALLISIA?",
+                type: "wifi_quiz"
+            },
+            {
+                id: 5,
+                title: "Taso 5: Digitaalinen Jalanjälki & Yksityisyys",
+                category: "Yksityisyys & Someseuraajat",
+                description: "Mitä verkkoon laittaa, se verkkoon jää ikuisesti. Pohdi kutakin julkaisua tai toimintaa: Onko se turvallista vai muodostaako se riskin jalanjäljellesi?",
+                type: "privacy_sorter"
+            },
+            {
+                id: 6,
+                title: "Taso 6: Kaksivaiheinen Tunnistautuminen (2FA)",
+                category: "Tilien Suojaus",
+                description: "Vaikka joku saisi salasanasi selville, Kaksivaiheinen Tunnistautuminen (2FA) pysäyttää tunkeutujan. Miten se toimii käytännössä?",
+                type: "2fa_simulation"
+            },
+            {
+                id: 7,
+                title: "Taso 7: Sovellusten Oikeudet & Huijaussovellukset",
+                category: "Sovellusturvallisuus",
+                description: "Lataat uutta peliä tai kuvanmuokkaussovellusta. Sovellus pyytää pääsyä puhelimesi tietoihin. Mitkä sovelluspyynnöt ovat vaarallisia hälytysmerkkejä?",
+                type: "app_permissions"
+            }
+        ];
+
+        // Initialize App
+        document.addEventListener("DOMContentLoaded", () => {
+            renderLevel();
+        });
+
+        // Main Render Function based on state
+        function renderLevel() {
+            const card = document.getElementById("game-card");
+            
+            if (gameState.currentLevel >= levels.length) {
+                renderVictoryScreen(card);
+                return;
+            }
+
+            const lvl = levels[gameState.currentLevel];
+            updateHeader();
+
+            let html = `
+                <!-- Level Header -->
+                <div class="border-b border-gray-800 pb-4 mb-6 flex justify-between items-start flex-wrap gap-2">
+                    <div>
+                        <span class="text-xs uppercase tracking-wider font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+                            ${lvl.category}
+                        </span>
+                        <h2 class="text-2xl font-black text-white mt-2">${lvl.title}</h2>
+                    </div>
+                    <button onclick="showHint('${lvl.hint || 'Lue kysymys huolellisesti ja arvioi riskejä.'}')" class="text-xs bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+                        <i class="fa-regular fa-lightbulb"></i> Vihje
+                    </button>
+                </div>
+
+                <p class="text-gray-300 text-sm md:text-base mb-6 leading-relaxed">${lvl.description}</p>
+            `;
+
+            // Render specific level type
+            if (lvl.type === "password_builder") {
+                html += renderPasswordBuilder();
+            } else if (lvl.type === "device_security") {
+                html += renderDeviceSecurity();
+            } else if (lvl.type === "phishing_chat") {
+                html += renderPhishingChat(lvl);
+            } else if (lvl.type === "wifi_quiz") {
+                html += renderWifiQuiz();
+            } else if (lvl.type === "privacy_sorter") {
+                html += renderPrivacySorter();
+            } else if (lvl.type === "2fa_simulation") {
+                html += render2FA();
+            } else if (lvl.type === "app_permissions") {
+                html += renderAppPermissions();
+            }
+
+            card.innerHTML = html;
+        }
+
+        // ================= TASO 1: SALASANAN RAKENTAMINEN =================
+        function renderPasswordBuilder() {
+            const pass = gameState.customPassword;
+            const stats = evaluatePassword(pass);
+
+            return `
+                <div class="bg-gray-900/80 p-5 rounded-xl border border-gray-800 mb-6 space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-400 mb-2">Kirjoita ja testaa keksittyä esimerkkisalasanaa (esim. <i>"LentavaKissa#2026!"</i>):</label>
+                        <div class="relative">
+                            <input id="pass-input" type="text" placeholder="Kirjoita esimerkkisalasana tähän..." value="${escapeHtml(pass)}" 
+                                oninput="onPasswordInput(this.value)"
+                                class="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-3 text-emerald-400 font-mono text-lg font-bold tracking-wider focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                    </div>
+
+                    <!-- Password Analysis Dashboard -->
+                    <div class="pt-2">
+                        <!-- Requirements Check list -->
+                        <div class="bg-gray-800/50 p-4 rounded-xl border border-gray-700/50 space-y-2 text-xs">
+                            <div class="font-bold text-gray-300 text-sm mb-2">Vahvan salasanan muistilista:</div>
+                            <div class="flex items-center gap-2 ${stats.hasLength ? 'text-emerald-400 font-semibold' : 'text-gray-500'}">
+                                <i class="fa-solid ${stats.hasLength ? 'fa-circle-check' : 'fa-circle-xmark'} text-sm"></i> Vähintään 12 merkkiä (${pass.length}/12)
+                            </div>
+                            <div class="flex items-center gap-2 ${stats.hasUpper ? 'text-emerald-400 font-semibold' : 'text-gray-500'}">
+                                <i class="fa-solid ${stats.hasUpper ? 'fa-circle-check' : 'fa-circle-xmark'} text-sm"></i> Isoja kirjaimia (A-Z)
+                            </div>
+                            <div class="flex items-center gap-2 ${stats.hasLower ? 'text-emerald-400 font-semibold' : 'text-gray-500'}">
+                                <i class="fa-solid ${stats.hasLower ? 'fa-circle-check' : 'fa-circle-xmark'} text-sm"></i> Pieniä kirjaimia (a-z)
+                            </div>
+                            <div class="flex items-center gap-2 ${stats.hasNum ? 'text-emerald-400 font-semibold' : 'text-gray-500'}">
+                                <i class="fa-solid ${stats.hasNum ? 'fa-circle-check' : 'fa-circle-xmark'} text-sm"></i> Numeroita (0-9)
+                            </div>
+                            <div class="flex items-center gap-2 ${stats.hasSpec ? 'text-emerald-400 font-semibold' : 'text-gray-500'}">
+                                <i class="fa-solid ${stats.hasSpec ? 'fa-circle-check' : 'fa-circle-xmark'} text-sm"></i> Erikoismerkkejä (!@#$%...)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-950/40 border border-blue-800/40 rounded-xl p-4 mb-6">
+                    <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-1"><i class="fa-solid fa-lightbulb"></i> Pro-Vinkki: Salasanause</h4>
+                    <p class="text-xs text-gray-300">Monen sanan yhdistelmä kuten <span class="text-emerald-400 font-mono">"LentavaKissa#2026!"</span> on helppo muistaa, erittäin pitkä ja tietokoneelle mahdoton arvata.</p>
+                </div>
+
+                <button onclick="checkPasswordLevel()" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-blue-600/30 transition transform active:scale-95">
+                    Testaa Salasana & Jatka <i class="fa-solid fa-shield-check ml-2"></i>
+                </button>
+            `;
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function onPasswordInput(val) {
+            gameState.customPassword = val;
+            renderLevel();
+            const input = document.getElementById('pass-input');
+            if (input) {
+                input.focus();
+                input.setSelectionRange(val.length, val.length);
+            }
+        }
+
+        function evaluatePassword(pass) {
+            const hasLength = pass.length >= 12;
+            const hasUpper = /[A-ZÅÄÖ]/.test(pass);
+            const hasLower = /[a-zåäö]/.test(pass);
+            const hasNum = /[0-9]/.test(pass);
+            const hasSpec = /[^A-Za-z0-9åäöÅÄÖ]/.test(pass);
+
+            return {
+                hasLength,
+                hasUpper,
+                hasLower,
+                hasNum,
+                hasSpec
+            };
+        }
+
+        function checkPasswordLevel() {
+            const pass = gameState.customPassword;
+            const stats = evaluatePassword(pass);
+            
+            if (stats.hasLength && stats.hasUpper && stats.hasLower && stats.hasNum && stats.hasSpec) {
+                showModal(
+                    true,
+                    "Mahtavaa! Vahva Salasana Luotu!",
+                    `Kirjoittamasi esimerkkisalasana "${pass}" täyttää kaikki turvavaatimukset! Se sisältää riittävästi pituutta ja eri merkkityyppejä.`,
+                    () => advanceLevel(100)
+                );
+            } else {
+                let missing = [];
+                if (!stats.hasLength) missing.push("pituus vähintään 12 merkkiä");
+                if (!stats.hasUpper) missing.push("iso kirjain");
+                if (!stats.hasLower) missing.push("pieni kirjain");
+                if (!stats.hasNum) missing.push("numero");
+                if (!stats.hasSpec) missing.push("erikoismerkki");
+
+                showModal(
+                    false,
+                    "Salasana tarvitsee vielä vahvistusta!",
+                    `Esimerkkisalasanasi on vielä puutteellinen. Puuttuvat asiat: ${missing.join(", ")}. Korjaa salasanaa ja kokeile uudelleen!`,
+                    null
+                );
+            }
+        }
+
+        // ================= TASO 2: PUHELIMEN SOTURIN SUOJAUS =================
+        let deviceQuestionsIndex = 0;
+        const deviceQuestions = [
+            {
+                question: "Puhelimesi ilmoittaa järjestelmäpäivityksestä (iOS/Android). Mitä teet?",
+                options: [
+                    { text: "Lykkään päivitystä kuukausia, koska en jaksa odottaa latausta.", correct: false, expl: "Päivitysten viivyttäminen jättää laitteesi alttiiksi tunnetuille kyberhyökkäyksille!" },
+                    { text: "Asennan päivityksen mahdollisimman pian (esim. yöllä), sillä se korjaa turvaaukkoja.", correct: true, expl: "Täysin oikein! Käyttöjärjestelmäpäivitykset sisältävät kriittisiä tietoturvakorjauksia." },
+                    { text: "En ikinä päivitä puhelintani, koska se on mielestäni turhaa.", correct: false, expl: "Päivittämättömät laitteet ovat hakkereiden helpoimpia maaleja!" }
+                ]
+            },
+            {
+                question: "Mikä on turvallisin tapa lukita puhelimen näyttö?",
+                options: [
+                    { text: "Pidän näytönlukituksen kokonaan pois päältä, jotta puhelin aukeaa nopeasti.", correct: false, expl: "Jos puhelin katoaa tai varastetaan, kuka tahansa pääsee käsiksi tietoihisi!" },
+                    { text: "Asetan helpon pyyhkäisykuvion (L-kirjain) tai '0000' PIN-koodin.", correct: false, expl: "Helpot kuviot ja PIN-koodit on erittäin helppo arvata tai katsoa olan yli." },
+                    { text: "Käytän vähintään 6-numeroista PIN-koodia, biometriikkaa (Sormenjälki/Biometrinen kasvontunnistus) tai pitkää pääsykoodia.", correct: true, expl: "Upeaa! Vahva lukitus pitää ulkopuoliset poissa henkilökohtaisista tiedoistasi." }
+                ]
+            }
+        ];
+
+        function renderDeviceSecurity() {
+            const q = deviceQuestions[deviceQuestionsIndex];
+            return `
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-6 space-y-3">
+                    <span class="text-xs text-gray-500 font-mono">Kysymys ${deviceQuestionsIndex + 1} / ${deviceQuestions.length}</span>
+                    <h3 class="text-base font-bold text-white">${q.question}</h3>
+                </div>
+
+                <div class="space-y-3">
+                    ${q.options.map((opt, idx) => `
+                        <button onclick="answerDeviceQuestion(${idx})" class="w-full text-left p-4 bg-gray-900 hover:bg-gray-800 border border-gray-800 hover:border-blue-500/50 rounded-xl transition flex items-center justify-between group">
+                            <span class="text-sm font-semibold text-gray-200 group-hover:text-white">${opt.text}</span>
+                            <i class="fa-solid fa-chevron-right text-gray-600 group-hover:text-blue-400"></i>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function answerDeviceQuestion(optIdx) {
+            const q = deviceQuestions[deviceQuestionsIndex];
+            const selected = q.options[optIdx];
+
+            if (selected.correct) {
+                if (deviceQuestionsIndex + 1 < deviceQuestions.length) {
+                    showModal(
+                        true,
+                        "Oikein valtava valinta!",
+                        selected.expl,
+                        () => {
+                            deviceQuestionsIndex++;
+                            renderLevel();
+                        }
+                    );
+                } else {
+                    deviceQuestionsIndex = 0;
+                    showModal(
+                        true,
+                        "Taso Läpäisty! Puhelimesi On Panssaroitu!",
+                        "Opit suojaamaan laitteesi pääsykoodeilla ja pitämään ohjelmistot ajan tasalla. Tämä suojaa henkilökohtaiset tietosi myös laitteen kadotessa.",
+                        () => advanceLevel(100)
+                    );
+                }
+            } else {
+                showModal(
+                    false,
+                    "Vaara Vaanii!",
+                    selected.expl,
+                    null
+                );
+            }
+        }
+
+        // ================= TASO 3: PHISHING CHAT =================
+        let currentMsgIndex = 0;
+
+        function renderPhishingChat(lvl) {
+            const msg = lvl.messages[currentMsgIndex];
+            return `
+                <div class="bg-gray-950 border border-gray-800 rounded-xl p-4 mb-6">
+                    <div class="text-xs text-gray-500 mb-3 flex justify-between items-center">
+                        <span>Viesti ${currentMsgIndex + 1} / ${lvl.messages.length}</span>
+                        <span class="bg-gray-800 px-2 py-0.5 rounded text-gray-400"><i class="fa-solid fa-envelope"></i> Saapuneet</span>
+                    </div>
+
+                    <div class="bg-gray-900 border border-gray-700/70 rounded-xl p-4 shadow-inner">
+                        <div class="flex items-center space-x-3 mb-3 border-b border-gray-800 pb-2">
+                            <div class="w-8 h-8 rounded-full bg-blue-600/30 text-blue-400 flex items-center justify-center font-bold text-sm">
+                                ${msg.sender[0]}
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">${msg.sender}</h4>
+                                <span class="text-[10px] text-gray-400">Tänään 14:22</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-200 leading-relaxed font-sans">${msg.text}</p>
+                    </div>
+                </div>
+
+                <p class="text-xs text-center text-gray-400 mb-4">Arvioi yllä oleva viesti: Onko kyseessä aito viesti vai vaarallinen huijaus/kalastelu?</p>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="answerPhishing(false)" class="py-3.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 font-bold rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-circle-check"></i> Aito & Turvallinen
+                    </button>
+                    <button onclick="answerPhishing(true)" class="py-3.5 bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 font-bold rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Kalastelu / Huijaus
+                    </button>
+                </div>
+            `;
+        }
+
+        function answerPhishing(userThoughtPhishing) {
+            const lvl = levels[2];
+            const msg = lvl.messages[currentMsgIndex];
+
+            if (userThoughtPhishing === msg.isPhishing) {
+                if (currentMsgIndex + 1 < lvl.messages.length) {
+                    showModal(
+                        true,
+                        "Oikein tunnistettu!",
+                        msg.isPhishing 
+                            ? "Loistavaa! Tunnisit vaaran merkit: Kiirehtiminen, epäilyttävä verkko-osoite (URL) sekä herkkien tietojen/kirjautumisen pyytäminen." 
+                            : "Täysin oikein. Tämä oli aito ja normaali viesti ilman epäilyttäviä linkkejä tai uhkailua.",
+                        () => {
+                            currentMsgIndex++;
+                            renderLevel();
+                        }
+                    );
+                } else {
+                    currentMsgIndex = 0;
+                    showModal(
+                        true,
+                        "Taso Läpäisty! Olet Huijauksien Tunnistaja!",
+                        "Opit tunnistamaan kalasteluviestit! Tärkein nyrkkisääntö: Älä koskaan klikkaa tuntemattomia linkkejä, jos viestissä luodaan kiireen tuntu tai luvataan ilmaista tavaraa.",
+                        () => advanceLevel(100)
+                    );
+                }
+            } else {
+                showModal(
+                    false,
+                    "Hups! Arvio meni pieleen",
+                    msg.isPhishing 
+                        ? "Tämä oli kalasteluviesti! Huomaa epäilyttävä verkko-osoite ja se, että viesti luo hätää ('15 minuutissa tai tili poistetaan'). Oikeat palvelut eivät toimi näin."
+                        : "Tämä viesti oli aito. Siinä ei kysytty salasanojasi eikä siinä ollut epäilyttäviä ulkopuolisia verkkolinkkejä.",
+                    null
+                );
+            }
+        }
+
+        // ================= TASO 4: WIFI QUIZ =================
+        function renderWifiQuiz() {
+            return `
+                <div class="space-y-3 mb-6">
+                    <button onclick="checkWifi(1)" class="w-full text-left p-4 bg-gray-900 hover:bg-gray-800 border border-gray-800 hover:border-blue-500/50 rounded-xl transition group">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-sm text-white group-hover:text-blue-400">A) Yhdistän avoimeen "Free_Cafe_WiFi" -verkkoon ja kirjaudun verkkopankkiin.</span>
+                            <i class="fa-solid fa-wifi text-gray-500 group-hover:text-blue-400"></i>
+                        </div>
+                        <p class="text-xs text-gray-400">Avoin verkko ilman salasanaa ilmaisella netillä.</p>
+                    </button>
+
+                    <button onclick="checkWifi(2)" class="w-full text-left p-4 bg-gray-900 hover:bg-gray-800 border border-gray-800 hover:border-blue-500/50 rounded-xl transition group">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-sm text-white group-hover:text-blue-400">B) Käytän oman puhelimeni mobiilidataa tai luotettavaa VPN-yhteyttä.</span>
+                            <i class="fa-solid fa-lock text-gray-500 group-hover:text-blue-400"></i>
+                        </div>
+                        <p class="text-xs text-gray-400">Omakohtainen salattu yhteys.</p>
+                    </button>
+
+                    <button onclick="checkWifi(3)" class="w-full text-left p-4 bg-gray-900 hover:bg-gray-800 border border-gray-800 hover:border-blue-500/50 rounded-xl transition group">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-sm text-white group-hover:text-blue-400">C) Yhdistän tuntemattomaan Wi-Fiin, joka ei vaadi salasanaa, ja lataan sovelluspäivityksiä.</span>
+                            <i class="fa-solid fa-download text-gray-500 group-hover:text-blue-400"></i>
+                        </div>
+                        <p class="text-xs text-gray-400">Nopea lataus julkisessa verkossa.</p>
+                    </button>
+                </div>
+            `;
+        }
+
+        function checkWifi(option) {
+            if (option === 2) {
+                showModal(
+                    true,
+                    "Täysin Oikein! Turvallinen Valinta!",
+                    "Oma mobiilidata ja luotettava VPN (Virtual Private Network) suojaavat liikenteesi. Julkisissa avoimissa Wi-Fi-verkoissa ulkopuoliset saattavat pystyä kaappaamaan suojaamatonta liikennettä.",
+                    () => advanceLevel(100)
+                );
+            } else {
+                showModal(
+                    false,
+                    "Tietoturvariski!",
+                    "Avointa julkista Wi-Fi-verkkoa ilman VPN-suojausta ei tulisi koskaan käyttää kirjautumiseen tai rahansiirtoihin! Kuka tahansa samassa verkossa oleva hakkeri voi seurata suojaamatonta liikennettä.",
+                    null
+                );
+            }
+        }
+
+        // ================= TASO 5: SOMEN PRIVACY SORTER (LAAJENNETTU) =================
+        const privacyItems = [
+            { text: "Kuva lemmikkikissastasi kotona", safe: true, expl: "Yleinen hauska kuva ilman tunnistettavia osoitetietoja on turvallinen." },
+            { text: "Lentolippu / boarding pass, jossa näkyy viivakoodi ja koko nimesi", safe: false, expl: "Viivakoodista saa poimittua nimesi, passisi tiedot ja varauskoodin!" },
+            { text: "Kuva kotisi avaimista unelmiesi uuden kodin edessä", safe: false, expl: "Nykyaikaisesta tarkasta avaimen kuvasta voidaan 3D-tulostaa toimiva kopio!" },
+            { text: "Mielipide suosikkipelimme päivityksestä", safe: true, expl: "Omien harrastusten ja mielipiteiden jakaminen on normaalia ilman tietoturvariskiä." },
+            { text: "Kuva kaveristasi nolaamassa itsensä ilman hänen lupaansa", safe: false, expl: "Muiden kuvien jakaminen ilman lupaa rikkoo yksityisyyttä ja voi täyttää kiusaamisen tunnusmerkit." },
+            { text: "Tarkka sijainti 'Live Location' -ominaisuudella julkisessa tarinassa", safe: false, expl: "Reaaliaikainen sijainti paljastaa tuntemattomille missä liikut ja milloin kotisi on tyhjä!" }
+        ];
+        let privacyIndex = 0;
+
+        function renderPrivacySorter() {
+            const item = privacyItems[privacyIndex];
+            return `
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 text-center mb-6">
+                    <span class="text-xs text-gray-500 font-mono block mb-2">Pohdi Julkaisua / Tekoa ${privacyIndex + 1} / ${privacyItems.length}</span>
+                    <div class="text-lg font-bold text-white mb-4 bg-gray-950 p-4 rounded-xl border border-gray-800">
+                        "${item.text}"
+                    </div>
+                    <p class="text-xs text-gray-400">Onko tämä turvallista jakaa julkisessa profiilissa / toimia näin?</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="answerPrivacy(true)" class="py-3.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 font-bold rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-thumbs-up"></i> Turvallista / Ok
+                    </button>
+                    <button onclick="answerPrivacy(false)" class="py-3.5 bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 font-bold rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-ban"></i> Älä Jaa / Ei Ok
+                    </button>
+                </div>
+            `;
+        }
+
+        function answerPrivacy(userSaidSafe) {
+            const item = privacyItems[privacyIndex];
+
+            if (userSaidSafe === item.safe) {
+                if (privacyIndex + 1 < privacyItems.length) {
+                    showModal(
+                        true,
+                        "Oikea arvio!",
+                        item.expl,
+                        () => {
+                            privacyIndex++;
+                            renderLevel();
+                        }
+                    );
+                } else {
+                    privacyIndex = 0;
+                    showModal(
+                        true,
+                        "Taso Läpäisty! Digitaalisen Jalanjäljen Mestarillinen Hallinta!",
+                        "Ymmärrät mitä verkkoon kannattaa laittaa ja miten suojaat yksityisyytesi. Muista: kerran verkkoon ladattua kuvaa tai tietoa on lähes mahdotonta saada kokonaan pois.",
+                        () => advanceLevel(100)
+                    );
+                }
+            } else {
+                showModal(
+                    false,
+                    "Harkitse vielä!",
+                    item.expl,
+                    null
+                );
+            }
+        }
+
+        // ================= TASO 6: 2FA SIMULAATIO =================
+        let generated2FACode = "";
+
+        function render2FA() {
+            return `
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-6 text-center space-y-4">
+                    <p class="text-xs text-gray-300">Hakkeri sai selville salasanasi! Mutta sinulla on **Kaksivaiheinen Tunnistautuminen (2FA)** päällä puhelimessasi.</p>
+                    
+                    <div class="bg-gray-950 p-4 rounded-xl border border-blue-500/30 inline-block w-full max-w-xs">
+                        <span class="text-[10px] text-gray-500 font-mono block">AUTHENTICATOR APP</span>
+                        <div id="2fa-code" class="text-2xl font-black text-blue-400 tracking-widest my-1 font-mono">
+                            ${generated2FACode || '******'}
+                        </div>
+                        <button onclick="generate2FACode()" class="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-md transition font-semibold">
+                            Luo 2FA-koodi
+                        </button>
+                    </div>
+
+                    <div id="2fa-input-section" class="${generated2FACode ? '' : 'hidden'} pt-2">
+                        <label class="block text-xs text-gray-400 mb-2">Syötä puhelimeesi saapunut 6-numeroinen vahvistuskoodi:</label>
+                        <input type="text" id="user-2fa-input" maxlength="6" placeholder="123456" class="bg-gray-950 border border-gray-700 text-center text-white font-mono text-xl py-2 px-4 rounded-xl w-40 focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+
+                <button onclick="verify2FA()" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-600/30 transition">
+                    Vahvista Kirjautuminen <i class="fa-solid fa-lock ml-2"></i>
+                </button>
+            `;
+        }
+
+        function generate2FACode() {
+            generated2FACode = Math.floor(100000 + Math.random() * 900000).toString();
+            renderLevel();
+        }
+
+        function verify2FA() {
+            const userInput = document.getElementById("user-2fa-input")?.value;
+            if (!generated2FACode) {
+                showModal(false, "Generoi Koodi Ensiksi!", "Paina ensin 'Luo 2FA-koodi' -painiketta simuloidaksesi puhelimeen saapuvaa viestiä.", null);
+                return;
+            }
+
+            if (userInput === generated2FACode) {
+                showModal(
+                    true,
+                    "Upeaa! Tilisi On Suojattu 2FA:lla!",
+                    "2FA (Two-Factor Authentication) varmistaa, että vaikka hakkeri tietäisi salasanasi, hän ei pääse tilillesi ilman puhelintasi!",
+                    () => advanceLevel(100)
+                );
+            } else {
+                showModal(
+                    false,
+                    "Virheellinen Koodi!",
+                    "Koodi ei täsmännyt. Katso Authenticator-sovelluksen antama 6-numeroinen koodi ja syötä se tarkalleen.",
+                    null
+                );
+            }
+        }
+
+        // ================= TASO 7: SOVELLUSTEN OIKEUDET =================
+        let appScenarioIndex = 0;
+        const appScenarios = [
+            {
+                appName: "Laskin & Taskulamppu Pro",
+                request: "Pyytää pääsyä: Yhteystietoihin, SMS-viesteihin ja Kameraan.",
+                isSafe: false,
+                expl: "Ympäripyöreä laskin tai taskulamppusovellus ei tarvitse pääsyä yhteystietoihisi tai tekstiviesteihisi! Tämä on tietoja kalasteleva haittaohjelma."
+            },
+            {
+                appName: "Kuvamuokkaus Studio FX",
+                request: "Pyytää pääsyä: Kuvat ja Media -kirjastoon.",
+                isSafe: true,
+                expl: "Kuvankäsittelysovellus tarvitsee oikeutetusti pääsyn kuvakirjastoosi, jotta voit muokata valokuviasi."
+            },
+            {
+                appName: "Ilmainen Suoratoisto TV HD",
+                request: "Pyytää pääsyä: Laitteen pääkäyttäjän oikeuksiin (Root/Accessibility Services) ja Taustasijaintiin.",
+                isSafe: false,
+                expl: "Ole erittäin varovainen! Pääkäyttäjä- tai käyttöapuoikeudet antavat sovellukselle täyden hallinnan puhelimestasi, mikä mahdollistaa salasanakirjauksien tallentamisen ja haittaohjelmien tausta-asennuksen."
+            },
+            {
+                appName: "Suosittu Kartta & Navigaattori",
+                request: "Pyytää pääsyä: Sijaintitietoihin sovellusta käytettäessä.",
+                isSafe: true,
+                expl: "Navigointisovelluksen toiminta perustuu GPS-sijaintiin, joten tämä pyyntö on täysin normaali ja tarpeellinen sovelluksen toiminnalle."
+            },
+            {
+                appName: "Ammunta-Peli 3D Extreme",
+                request: "Pyytää pääsyä: Mikrofoniin, Yhteystietoihin ja Mikro-Maksutilin hallintaan ilman vahvistusta.",
+                isSafe: false,
+                expl: "Peruspeli ei tarvitse pääsyä mikrofoniin eikä etenkään automaattisia maksunosto-oikeuksia. Se voi yrittää veloittaa tiliäsi ilman lupaasi."
+            }
+        ];
+
+        function renderAppPermissions() {
+            const sc = appScenarios[appScenarioIndex];
+            return `
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5 mb-6">
+                    <span class="text-xs text-gray-500 font-mono block mb-2">Sovellus 1.0 (${appScenarioIndex + 1}/${appScenarios.length})</span>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-600/30 border border-indigo-500/40 text-indigo-400 flex items-center justify-center text-xl font-bold">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-white">${sc.appName}</h3>
+                            <p class="text-xs text-amber-400"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Oikeuspyyntö</p>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-200 bg-gray-950 p-3 rounded-lg border border-gray-800 font-mono">${sc.request}</p>
+                </div>
+
+                <p class="text-xs text-center text-gray-400 mb-4">Hyväksytkö sovelluksen vaatimat oikeudet vai hylkäätkö pyynnön?</p>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="answerAppPerm(true)" class="py-3.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-300 font-bold rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i> Hyväksy Oikeudet
+                    </button>
+                    <button onclick="answerAppPerm(false)" class="py-3.5 bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 font-bold rounded-xl transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-xmark"></i> Estä / Hylkää
+                    </button>
+                </div>
+            `;
+        }
+
+        function answerAppPerm(userAllowed) {
+            const sc = appScenarios[appScenarioIndex];
+
+            if (userAllowed === sc.isSafe) {
+                if (appScenarioIndex + 1 < appScenarios.length) {
+                    showModal(
+                        true,
+                        "Oikea Ratkaisu!",
+                        sc.expl,
+                        () => {
+                            appScenarioIndex++;
+                            renderLevel();
+                        }
+                    );
+                } else {
+                    appScenarioIndex = 0;
+                    showModal(
+                        true,
+                        "Koko Peli Läpäisty! Olet Kyberturvallisuuden Mestari!",
+                        "Opit tunnistamaan epäilyttävät sovelluslupatiedot. Olet käynyt läpi kaikki 7 tasoa menestyksekkäästi!",
+                        () => advanceLevel(100)
+                    );
+                }
+            } else {
+                showModal(
+                    false,
+                    "Mietipä uudestaan!",
+                    sc.expl,
+                    null
+                );
+            }
+        }
+
+        // ================= VOITTO / LÄPÄISY RUUTU =================
+        function renderVictoryScreen(card) {
+            card.innerHTML = `
+                <div class="text-center py-8 space-y-6">
+                    <div class="w-24 h-24 bg-gradient-to-tr from-yellow-400 to-amber-500 rounded-full flex items-center justify-center text-gray-950 text-5xl mx-auto shadow-xl shadow-yellow-500/20 animate-bounce">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-black text-white">ONNITTELUT!</h2>
+                        <p class="text-blue-400 font-bold text-lg">Olet nyt Sertifioitu KyberDefender!</p>
+                    </div>
+
+                    <p class="text-gray-300 text-sm max-w-lg mx-auto leading-relaxed">
+                        Olet käynyt läpi kaikki 7 tärkeintä kansalaisen kyberturvallisuuden osa-aluetta. Osaat luoda vahvoja salasanoja, suojata laitteesi, tunnistaa kalastelun ja huijaussovellukset, suojata some-yksityisyytesi sekä käyttää 2FA-tunnistautumista.
+                    </p>
+
+                    <div class="bg-gray-900 border border-gray-800 p-4 rounded-xl max-w-md mx-auto grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="text-xs text-gray-500 block">Kokonaispisteet</span>
+                            <span class="text-2xl font-black text-yellow-400">${gameState.score} XP</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-500 block">Turvallisuustaso</span>
+                            <span class="text-2xl font-black text-emerald-400">100% Sinetöity</span>
+                        </div>
+                    </div>
+
+                    <button onclick="restartGame()" class="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-600/30 transition">
+                        Pelaa Uudelleen <i class="fa-solid fa-rotate-right ml-2"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        // Helper Utilities
+        function advanceLevel(xpGain) {
+            gameState.score += xpGain;
+            gameState.currentLevel++;
+            renderLevel();
+        }
+
+        function updateHeader() {
+            document.getElementById("score-display").innerText = `${gameState.score} XP`;
+            document.getElementById("level-indicator").innerText = `Taso ${Math.min(gameState.currentLevel + 1, levels.length)}/${levels.length}`;
+            
+            const progressPct = Math.round((gameState.currentLevel / levels.length) * 100);
+            document.getElementById("progress-bar").style.width = `${progressPct}%`;
+            document.getElementById("progress-text").innerText = `Pelitilanne: ${progressPct}%`;
+
+            // Ranks
+            const rankBadge = document.getElementById("rank-badge");
+            if (gameState.score < 200) rankBadge.innerText = "Kokematon Surffaaja";
+            else if (gameState.score < 400) rankBadge.innerText = "Valpas Nettikäyttäjä";
+            else if (gameState.score < 600) rankBadge.innerText = "Kyber-Agentti";
+            else rankBadge.innerText = "Mestari KyberDefender";
+        }
+
+        function showModal(isSuccess, title, bodyText, onNext) {
+            const modal = document.getElementById("feedback-modal");
+            const modalContent = document.getElementById("modal-content");
+            const modalIcon = document.getElementById("modal-icon");
+            const modalTitle = document.getElementById("modal-title");
+            const modalBody = document.getElementById("modal-body");
+            const modalBtn = document.getElementById("modal-btn");
+
+            if (isSuccess) {
+                modalIcon.className = "w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                modalIcon.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
+                modalTitle.className = "text-xl font-bold text-center mb-2 text-emerald-400";
+            } else {
+                modalIcon.className = "w-16 h-16 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                modalIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
+                modalTitle.className = "text-xl font-bold text-center mb-2 text-rose-400";
+            }
+
+            modalTitle.innerText = title;
+            modalBody.innerText = bodyText;
+
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                modalContent.classList.remove("scale-95", "opacity-0");
+                modalContent.classList.add("scale-100", "opacity-100");
+            }, 10);
+
+            modalBtn.onclick = () => {
+                modalContent.classList.remove("scale-100", "opacity-100");
+                modalContent.classList.add("scale-95", "opacity-0");
+                setTimeout(() => {
+                    modal.classList.add("hidden");
+                    if (onNext) onNext();
+                }, 200);
+            };
+        }
+
+        function showHint(hintText) {
+            showModal(true, "Vihje Haasteeseen", hintText, null);
+        }
+
+        function restartGame() {
+            gameState.score = 0;
+            gameState.currentLevel = 0;
+            generated2FACode = "";
+            deviceQuestionsIndex = 0;
+            privacyIndex = 0;
+            currentMsgIndex = 0;
+            appScenarioIndex = 0;
+            renderLevel();
+        }
+    </script>
+</body>
+</html>
